@@ -27,8 +27,8 @@ func NewAuthService(db *gorm.DB, cfg *config.Config) *AuthService {
 func (s *AuthService) Register(req *dto.RegisterRequest) (*dto.AuthResponse, error) {
 	// Check if user exists
 	var existingUser models.User
-	if err := s.db.Where("email = ?", req.Email).First(&existingUser).Error; err != nil {
-		return nil, errors.New("user not found")
+	if err := s.db.Where("email = ?", req.Email).First(&existingUser).Error; err == nil {
+		return nil, errors.New("account with email already exists")
 	}
 
 	// Hash password
@@ -111,7 +111,7 @@ func (s *AuthService) generateAuthResponse(user *models.User) (*dto.AuthResponse
 
 	refreshTokenModel := models.RefreshToken{
 		UserID:    user.ID,
-		Token:     accessToken,
+		Token:     refreshToken,
 		ExpiresAt: time.Now().Add(s.config.JWT.RefreshTokenExpires),
 	}
 
