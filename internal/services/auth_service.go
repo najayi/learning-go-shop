@@ -13,21 +13,21 @@ import (
 )
 
 type AuthService struct {
-	db *gorm.DB
+	db     *gorm.DB
 	config *config.Config
 }
 
-func NewAuthService(db *gorm.DB, config *config.Config) *AuthService {
+func NewAuthService(db *gorm.DB, cfg *config.Config) *AuthService {
 	return &AuthService{
 		db:     db,
-		config: config,
+		config: cfg,
 	}
 }
 
-func (s *AuthService) Register(req *dto.RegisterRequest) (*dto.AuthResponse, error)  {
+func (s *AuthService) Register(req *dto.RegisterRequest) (*dto.AuthResponse, error) {
 	// Check if user exists
 	var existingUser models.User
-	if err:= s.db.Where("email = ?", req.Email).First(&existingUser).Error; err != nil{
+	if err := s.db.Where("email = ?", req.Email).First(&existingUser).Error; err != nil {
 		return nil, errors.New("user not found")
 	}
 
@@ -39,12 +39,12 @@ func (s *AuthService) Register(req *dto.RegisterRequest) (*dto.AuthResponse, err
 
 	// Create user
 	user := models.User{
-		Email: req.Email,
-		Password: hashedPassword,
+		Email:     req.Email,
+		Password:  hashedPassword,
 		FirstName: req.FirstName,
-		LastName: req.LastName,
-		Phone: req.Phone,
-		Role: models.UserRoleCustomer,
+		LastName:  req.LastName,
+		Phone:     req.Phone,
+		Role:      models.UserRoleCustomer,
 	}
 	if err := s.db.Create(&user).Error; err != nil {
 		return nil, err
@@ -60,7 +60,7 @@ func (s *AuthService) Register(req *dto.RegisterRequest) (*dto.AuthResponse, err
 	return s.generateAuthResponse(&user)
 }
 
-func (s *AuthService) Login(req *dto.LoginRequest) (*dto.AuthResponse, error)  {
+func (s *AuthService) Login(req *dto.LoginRequest) (*dto.AuthResponse, error) {
 	var user models.User
 	if err := s.db.Where("email = ? AND is_active = ?", req.Email, true).First(&user).Error; err != nil {
 		return nil, errors.New("invalid credentials")
@@ -73,7 +73,7 @@ func (s *AuthService) Login(req *dto.LoginRequest) (*dto.AuthResponse, error)  {
 	return s.generateAuthResponse(&user)
 }
 
-func (s *AuthService) RefreshToken(req *dto.RefreshTokenRequest) (*dto.AuthResponse, error)  {
+func (s *AuthService) RefreshToken(req *dto.RefreshTokenRequest) (*dto.AuthResponse, error) {
 	claims, err := utils.ValidateToken(req.RefreshToken, s.config.JWT.Secret)
 	if err != nil {
 		return nil, errors.New("invalid refresh token")
@@ -98,7 +98,7 @@ func (s *AuthService) Logout(refreshToken string) error {
 	return s.db.Where("token = ?", refreshToken).Delete(&models.RefreshToken{}).Error
 }
 
-func (s *AuthService) generateAuthResponse(user *models.User) (*dto.AuthResponse, error)  {
+func (s *AuthService) generateAuthResponse(user *models.User) (*dto.AuthResponse, error) {
 	accessToken, refreshToken, err := utils.GenerateTokenPair(
 		&s.config.JWT,
 		user.ID,
@@ -110,8 +110,8 @@ func (s *AuthService) generateAuthResponse(user *models.User) (*dto.AuthResponse
 	}
 
 	refreshTokenModel := models.RefreshToken{
-		UserID: user.ID,
-		Token:  accessToken,
+		UserID:    user.ID,
+		Token:     accessToken,
 		ExpiresAt: time.Now().Add(s.config.JWT.RefreshTokenExpires),
 	}
 
@@ -119,15 +119,15 @@ func (s *AuthService) generateAuthResponse(user *models.User) (*dto.AuthResponse
 
 	return &dto.AuthResponse{
 		User: dto.UserResponse{
-			ID: user.ID,
-			Email: user.Email,
+			ID:        user.ID,
+			Email:     user.Email,
 			FirstName: user.FirstName,
-			LastName: user.LastName,
-			Phone: user.Phone,
-			Role: string(user.Role),
-			IsActive: user.IsActive,
+			LastName:  user.LastName,
+			Phone:     user.Phone,
+			Role:      string(user.Role),
+			IsActive:  user.IsActive,
 		},
-		AccessToken: accessToken,
+		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}, nil
 }
