@@ -21,13 +21,13 @@ func (s *UserService) GetProfile(userID uint) (*dto.UserResponse, error) {
 	}
 
 	return &dto.UserResponse{
-		ID: user.ID,
-		Email: user.Email,
+		ID:        user.ID,
+		Email:     user.Email,
 		FirstName: user.FirstName,
-		LastName: user.LastName,
-		Phone: user.Phone,
-		Role: string(user.Role),
-		IsActive: user.IsActive,
+		LastName:  user.LastName,
+		Phone:     user.Phone,
+		Role:      string(user.Role),
+		IsActive:  user.IsActive,
 	}, nil
 }
 
