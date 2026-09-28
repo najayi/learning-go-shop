@@ -2,13 +2,16 @@
 
 help:
 	@echo "Available commands:"
-	@echo " make build - Build the application"
-	@echo " make run - Run the application"
-	@echo " make dev - Run the application in development mode"
-	@echo " make lint - Run linter on the codebase"
-	@echo " make format - Format the code and rearrange imports"
-	@echo " make migrate-up - Apply database migrations"
-	@echo " make migrate-down - Rollback database migrations"
+	@echo " make build 			- Build the application"
+	@echo " make run 			- Run the application"
+	@echo " make dev 			- Run the application in development mode"
+	@echo " make lint 			- Run linter on the codebase"
+	@echo " make format 		- Format the code and rearrange imports"
+	@echo " make docs-generate 	- Generate API documentation"
+	@echo " make migrate-up 	- Apply database migrations"
+	@echo " make migrate-down 	- Rollback database migrations"
+	@echo " make docker-up 		- Start docker container"
+	@echo " make docker-down 	- Stop docker container"
 
 build:
 	go build -o bin/app ./cmd/api
