@@ -14,6 +14,7 @@ import (
 	"github.com/najayi/learning-go-shop/internal/config"
 	"github.com/najayi/learning-go-shop/internal/database"
 	"github.com/najayi/learning-go-shop/internal/logger"
+	"github.com/najayi/learning-go-shop/internal/providers"
 	"github.com/najayi/learning-go-shop/internal/server"
 	"github.com/najayi/learning-go-shop/internal/services"
 )
@@ -41,8 +42,9 @@ func main() {
 	authService := services.NewAuthService(db, cfg)
 	productService := services.NewProductService(db)
 	userService := services.NewUserService(db)
+	uploadService := services.NewUploadService(providers.NewLocalUploadProvider(cfg.Upload.Path))
 
-	srv := server.New(cfg, db, &log, authService, productService, userService)
+	srv := server.New(cfg, db, &log, authService, productService, userService, uploadService)
 
 	router := srv.SetupRoutes()
 
