@@ -76,12 +76,12 @@ func Load() (*Config, error) {
 			GinMode: getEnv("GIN_MODE", "debug"),
 		},
 		Database: DatabaseConfig{
-			Host:     getEnv("DATABASE_HOST", "localhost"),
-			Port:     getEnv("DATABASE_PORT", "5432"),
-			User:     getEnv("DATABASE_USER", "postgres"),
-			Password: getEnv("DATABASE_PASSWORD", "password"),
-			Name:     getEnv("DATABASE_NAME", "ecommerce_shop"),
-			SSLMode:  getEnv("DATABASE_SSLMODE", "disable"),
+			Host:     getEnv("DB_HOST", "localhost"),
+			Port:     getEnv("DB_PORT", "5432"),
+			User:     getEnv("DB_USER", "postgres"),
+			Password: getEnv("DB_PASSWORD", "password"),
+			Name:     getEnv("DB_NAME", "ecommerce_shop"),
+			SSLMode:  getEnv("DB_SSLMODE", "disable"),
 		},
 		JWT: JWTConfig{
 			Secret:              getEnv("JWT_SECRET", "your-super-secret-jwt-key"),
