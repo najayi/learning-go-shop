@@ -7,20 +7,23 @@ import (
 
 	"github.com/najayi/learning-go-shop/internal/config"
 	"github.com/najayi/learning-go-shop/internal/dto"
+	"github.com/najayi/learning-go-shop/internal/events"
 	"github.com/najayi/learning-go-shop/internal/models"
 	"github.com/najayi/learning-go-shop/internal/utils"
 	"gorm.io/gorm"
 )
 
 type AuthService struct {
-	db     *gorm.DB
-	config *config.Config
+	db             *gorm.DB
+	config         *config.Config
+	eventPublisher events.Publisher
 }
 
-func NewAuthService(db *gorm.DB, cfg *config.Config) *AuthService {
+func NewAuthService(db *gorm.DB, cfg *config.Config, eventPublisher events.Publisher) *AuthService {
 	return &AuthService{
-		db:     db,
-		config: cfg,
+		db:             db,
+		config:         cfg,
+		eventPublisher: eventPublisher,
 	}
 }
 
@@ -116,6 +119,11 @@ func (s *AuthService) generateAuthResponse(user *models.User) (*dto.AuthResponse
 	}
 
 	s.db.Create(&refreshTokenModel)
+
+	err = s.eventPublisher.Publish("USER_LOGIN", user, map[string]string{})
+	if err != nil {
+		return nil, fmt.Errorf("unable to publish user login event: %w", err)
+	}
 
 	return &dto.AuthResponse{
 		User: dto.UserResponse{

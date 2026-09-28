@@ -13,6 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/najayi/learning-go-shop/internal/config"
 	"github.com/najayi/learning-go-shop/internal/database"
+	"github.com/najayi/learning-go-shop/internal/events"
 	"github.com/najayi/learning-go-shop/internal/interfaces"
 	"github.com/najayi/learning-go-shop/internal/logger"
 	"github.com/najayi/learning-go-shop/internal/providers"
@@ -56,11 +57,19 @@ func main() {
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to get database connection")
 	}
-
 	defer mainDB.Close()
+
+	ctx := context.Background()
+
+	eventPublisher, err := events.NewEventPublisher(ctx, &cfg.AWS)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to create event publisher")
+		return
+	}
+
 	gin.SetMode(cfg.Server.GinMode)
 
-	authService := services.NewAuthService(db, cfg)
+	authService := services.NewAuthService(db, cfg, eventPublisher)
 	productService := services.NewProductService(db)
 	userService := services.NewUserService(db)
 	cartService := services.NewCartService(db)
