@@ -9,14 +9,14 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
-	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
+	"github.com/aws/aws-sdk-go-v2/feature/s3/transfermanager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	appconfig "github.com/najayi/learning-go-shop/internal/config"
 )
 
 type S3Provider struct {
 	client   *s3.Client
-	uploader *manager.Uploader
+	uploader *transfermanager.Client
 	bucket   string
 	endpoint string
 }
@@ -45,7 +45,7 @@ func NewS3Provider(cfg *appconfig.Config) *S3Provider {
 
 	return &S3Provider{
 		client:   client,
-		uploader: manager.NewUploader(client),
+		uploader: transfermanager.New(client),
 		bucket:   cfg.AWS.S3Bucket,
 		endpoint: cfg.AWS.S3Endpoint,
 	}
@@ -60,7 +60,7 @@ func (p *S3Provider) UploadFile(file *multipart.FileHeader, path string) (string
 	}
 	defer src.Close()
 
-	result, err := p.uploader.Upload(context.TODO(), &s3.PutObjectInput{
+	result, err := p.uploader.UploadObject(context.TODO(), &transfermanager.UploadObjectInput{
 		Bucket: aws.String(p.bucket),
 		Key:    aws.String(path),
 		Body:   src,
