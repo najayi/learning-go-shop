@@ -95,8 +95,9 @@ func (s *CartService) UpdateCartItem(userID, itemID uint, req *dto.UpdateCartIte
 }
 
 func (s *CartService) RemoveFromCart(userID, itemID uint) error {
-	return s.db.Joins("JOIN carts ON carts.id = cart_items.cart_id").
-		Where("cart_items.id = ? AND carts.user_id = ?", itemID, userID).
+	return s.db.Where("id = ? AND cart_id IN (?)", itemID,
+		s.db.Select("id").Table("carts").
+			Where("user_id = ?", userID)).
 		Delete(&models.CartItem{}).Error
 }
 
@@ -106,7 +107,7 @@ func (s *CartService) convertToCartResponse(cart *models.Cart) *dto.CartResponse
 	var total float64
 
 	for i := range cart.CartItems {
-		subtotal := float64(cartItems[i].Quantity) * cartItems[i].Product.Price
+		subtotal := float64(cart.CartItems[i].Quantity) * cart.CartItems[i].Product.Price
 		total += subtotal
 		cartItems[i] = dto.CartItemResponse{
 			ID: cart.CartItems[i].ID,
