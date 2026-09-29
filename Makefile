@@ -1,4 +1,4 @@
-.PHONY: help build run dev lint format docs-generate migrate-up migrate-down docker-up docker-down
+.PHONY: help build run dev lint format docs-generate migrate-up migrate-down docker-up docker-down graph-generate
 
 help:
 	@echo "Available commands:"
@@ -12,6 +12,7 @@ help:
 	@echo " make migrate-down 	- Rollback database migrations"
 	@echo " make docker-up 		- Start docker container"
 	@echo " make docker-down 	- Stop docker container"
+	@echo " make graph-generate - Run gqlgen generator"
 
 build:
 	@echo "Building all binaries..."
@@ -52,3 +53,7 @@ docker-up:
 
 docker-down:
 	docker compose -f docker/docker-compose.yml down
+
+graph-generate:
+	@go get github.com/99designs/gqlgen@v0.17.95
+	@go run github.com/99designs/gqlgen generate
