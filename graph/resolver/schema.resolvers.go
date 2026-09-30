@@ -302,7 +302,6 @@ func (r *queryResolver) Product(ctx context.Context, id string) (*dto.ProductRes
 
 // Categories is the resolver for the categories field.
 func (r *queryResolver) Categories(ctx context.Context) ([]*dto.CategoryResponse, error) {
-
 	categories, err := r.productService.GetCategories()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get categories: %w", err)
@@ -393,23 +392,3 @@ type (
 	mutationResolver struct{ *Resolver }
 	queryResolver    struct{ *Resolver }
 )
-
-func getPagingNumbers(page *int, limit *int) (int, int) {
-	var p, l = 0, 0
-
-	if page != nil {
-		p = *page
-	}
-
-	if limit != nil {
-		l = *limit
-	}
-
-	if p <= 0 {
-		p = 1
-	}
-	if l <= 0 {
-		l = 10
-	}
-	return p, l
-}
