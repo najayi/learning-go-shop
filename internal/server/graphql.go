@@ -59,6 +59,24 @@ func (s *Server) playgroundHandler() gin.HandlerFunc {
 	}
 }
 
+// GraphQL playground handler for public endpoints
+func (s *Server) playgroundPublicHandler() gin.HandlerFunc {
+	h := playground.Handler("GraphQL Playground", "/graphql/public/")
+
+	return func(c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
+	}
+}
+
+// GraphQL playground handler for protected endpoints
+func (s *Server) playgroundProtectedHandler() gin.HandlerFunc {
+	h := playground.Handler("GraphQL Playground", "/graphql/protected/")
+
+	return func(c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
+	}
+}
+
 func (s *Server) graphqlMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
