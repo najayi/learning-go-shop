@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"time"
+
 	"github.com/najayi/learning-go-shop/internal/models"
 	"gorm.io/gorm"
 )
@@ -16,51 +18,57 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 }
 
 func (u *UserRepository) GetByEmail(email string) (*models.User, error) {
-	//TODO implement me
-	panic("implement me")
+	var user models.User
+	if err := u.db.Where("email = ?", email).First(&user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
 
 func (u *UserRepository) GetByID(id uint) (*models.User, error) {
-	//TODO implement me
-	panic("implement me")
+	var user models.User
+	if err := u.db.First(&user, id).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
 
 func (u *UserRepository) GetByEmailAndActive(email string, isActive bool) (*models.User, error) {
-	//TODO implement me
-	panic("implement me")
+	var user models.User
+	if err := u.db.Where("email = ? AND is_active = ?", email, isActive).First(&user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
 
 func (u *UserRepository) Create(user *models.User) error {
-	//TODO implement me
-	panic("implement me")
+	return u.db.Create(user).Error
 }
 
 func (u *UserRepository) Update(user *models.User) error {
-	//TODO implement me
-	panic("implement me")
+	return u.db.Save(user).Error
 }
 
 func (u *UserRepository) Delete(id uint) error {
-	//TODO implement me
-	panic("implement me")
+	return u.db.Delete(&models.User{}, id).Error
 }
 
 func (u *UserRepository) CreateRefreshToken(token *models.RefreshToken) error {
-	//TODO implement me
-	panic("implement me")
+	return u.db.Create(token).Error
 }
 
 func (u *UserRepository) GetValidRefreshToken(token string) (*models.RefreshToken, error) {
-	//TODO implement me
-	panic("implement me")
+	var refreshToken models.RefreshToken
+	if err := u.db.Where("token = ? AND expires_at > ?", token, time.Now()).First(&refreshToken).Error; err != nil {
+		return nil, err
+	}
+	return &refreshToken, nil
 }
 
 func (u *UserRepository) DeleteRefreshToken(token string) error {
-	//TODO implement me
-	panic("implement me")
+	return u.db.Where("token = ?", token).Delete(&models.RefreshToken{}).Error
 }
 
 func (u *UserRepository) DeleteRefreshTokenByID(id uint) error {
-	//TODO implement me
-	panic("implement me")
+	return u.db.Delete(&models.RefreshToken{}, id).Error
 }
