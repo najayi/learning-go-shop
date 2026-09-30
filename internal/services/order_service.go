@@ -186,8 +186,9 @@ func (s *OrderService) convertToOrderResponse(order *models.Order) dto.OrderResp
 					IsActive:    item.Product.Category.IsActive,
 				},
 			},
-			Quantity: item.Quantity,
-			Price:    item.Price,
+			Quantity:  item.Quantity,
+			Price:     item.Price,
+			CreatedAt: item.CreatedAt,
 		}
 	}
 
@@ -198,5 +199,6 @@ func (s *OrderService) convertToOrderResponse(order *models.Order) dto.OrderResp
 		TotalAmount: order.TotalAmount,
 		OrderItems:  orderItems,
 		CreatedAt:   order.CreatedAt,
+		UpdatedAt:   order.UpdatedAt,
 	}
 }
