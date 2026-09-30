@@ -16,21 +16,21 @@ func NewCartRepository(db *gorm.DB) *CartRepository {
 }
 
 func (c *CartRepository) GetByUserID(userID uint) (*models.Cart, error) {
-	//TODO implement me
-	panic("implement me")
+	var cart models.Cart
+	if err := c.db.Where("user_id = ?", userID).First(&cart).Error; err != nil {
+		return nil, err
+	}
+	return &cart, nil
 }
 
 func (c *CartRepository) Create(cart *models.Cart) error {
-	//TODO implement me
-	panic("implement me")
+	return c.db.Create(cart).Error
 }
 
 func (c *CartRepository) Update(cart *models.Cart) error {
-	//TODO implement me
-	panic("implement me")
+	return c.db.Save(cart).Error
 }
 
 func (c *CartRepository) Delete(id uint) error {
-	//TODO implement me
-	panic("implement me")
+	return c.db.Delete(&models.Cart{}, id).Error
 }
