@@ -12,6 +12,8 @@ import (
 	"github.com/najayi/learning-go-shop/internal/interfaces"
 )
 
+var _ UploadServiceInterface = (*UploadService)(nil)
+
 type UploadService struct {
 	provider interfaces.UploadProvider
 }
