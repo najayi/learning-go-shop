@@ -12,18 +12,18 @@ import (
 // here.
 
 type Resolver struct {
-	authService    services.AuthService
-	userService    services.UserService
-	productService services.ProductService
-	cartService    services.CartService
-	orderService   services.OrderService
+	authService    *services.AuthService
+	userService    *services.UserService
+	productService *services.ProductService
+	cartService    *services.CartService
+	orderService   *services.OrderService
 }
 
-func NewResolver(authService services.AuthService,
-	userService services.UserService,
-	productService services.ProductService,
-	cartService services.CartService,
-	orderService services.OrderService) *Resolver {
+func NewResolver(authService *services.AuthService,
+	userService *services.UserService,
+	productService *services.ProductService,
+	cartService *services.CartService,
+	orderService *services.OrderService) *Resolver {
 
 	return &Resolver{
 		authService:    authService,
