@@ -10,10 +10,6 @@ import (
 	"gorm.io/gorm"
 )
 
-const (
-	defaultDateFormat = "2006-01-02T15:04:052"
-)
-
 type OrderService struct {
 	db *gorm.DB
 }
